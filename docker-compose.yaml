@@ -1,0 +1,25 @@
+version: "3"
+services:
+  keycloak-compose:
+    image: keycloak/keycloak:20.0.0
+    ports:
+      - "8280:8080"
+    volumes:
+      - ./keycloak-import:/opt/keycloak/data/import
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    command:
+      - start-dev
+      - --import-realm
+  postgres-compose:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
+    environment:
+      - POSTGRES_PASSWORD=10021002
+
+
