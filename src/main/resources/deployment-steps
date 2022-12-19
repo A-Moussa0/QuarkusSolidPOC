@@ -1,0 +1,53 @@
+- Install docker/docker-compose (usually packaged together if using docker desktop)
+docker documentations
+
+- Run docker:
+sudo service docker start
+
+- Pull Postgres Image
+docker pull postgres
+
+- Run postgres container
+docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=10021002 -d quarkus_solid_poc
+
+- Start postgres container (optional)
+docker start quarkus_solid_poc
+
+- Open docker image to configure it
+docker exec -it quarkus_solid_poc bash
+    - Change employee to postgres
+    su postgres
+    - Go into psql
+    psql
+    - Create Database
+    CREATE DATABASE quarkus_solid_poc;
+    - Create user
+    CREATE USER quarkus WITH PASSWORD 'password';
+    - Grant all access to that employee on the created database
+    GRANT ALL privileges on database quarkus_solid_poc to quarkus;
+    - Connect to db
+    \c quarkus_solid_poc
+    - Grant all privileges on schema to employee
+    GRANT ALL ON schema public TO quarkus;
+
+- Run KeyCloack:
+docker run --name keycloak -p 8180:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -v /home/daojin/QuarkusSolidPOC/keycloak-import:/opt/keycloak/data/import quay.io/keycloak/keycloak:20.0.0 start-dev --import-realm
+
+- Create a realm
+- Create clients
+    - Create roles
+    - Add Service account role to the backend client
+        manage-employees
+
+- Start KeyCloak container (optional)
+docker start keycloak
+
+- Start postgres db (optional)
+docker start quarkus_solid_poc
+
+-e KEYCLOAK_IMPORT=/tmp/example-realm.json \
+-v /path/to/all-realm-export.json:/tmp/example-realm.json \
+
+docker exec keycloak ./opt/keycloak/bin/kc.sh --verbose --realm quarkus export --file /opt/keycloak/realm-export.json
+
+docker exec -it quarkus_solid_poc psql -U postgres -c
