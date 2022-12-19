@@ -1,6 +1,6 @@
 version: "3"
 services:
-  keycloak-compose:
+  keycloak:
     image: keycloak/keycloak:20.0.0
     ports:
       - "8280:8080"
@@ -12,7 +12,7 @@ services:
     command:
       - start-dev
       - --import-realm
-  postgres-compose:
+  postgres:
     image: postgres:latest
     ports:
       - "5432:5432"
