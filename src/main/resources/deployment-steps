@@ -51,3 +51,10 @@ docker start quarkus_solid_poc
 docker exec keycloak ./opt/keycloak/bin/kc.sh --verbose --realm quarkus export --file /opt/keycloak/realm-export.json
 
 docker exec -it quarkus_solid_poc psql -U postgres -c
+
+
+nohup java -jar ./quarkus-solid-poc-1.0.0-SNAPSHOT-runner.jar &
+
+docker compose -d -f docker-compose.yaml up
+
+
