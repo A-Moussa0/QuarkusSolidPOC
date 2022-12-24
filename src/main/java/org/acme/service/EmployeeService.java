@@ -5,6 +5,9 @@ import org.acme.model.Employee;
 import org.acme.model.Role;
 import org.acme.model.Status;
 import org.acme.model.dto.CreateEmployee;
+import org.acme.model.dto.UpdateEmployeeRequest;
+import org.acme.model.exception.ConflictException;
+import org.apache.commons.lang3.EnumUtils;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -55,8 +58,8 @@ public class EmployeeService {
     @Transactional(SUPPORTS)
     public Employee createEmployee(@Valid CreateEmployee createEmployee) {
         if (userAlreadyExists("username", createEmployee.username) || userAlreadyExists("email", createEmployee.email)) {
-            logger.info("User exists" + createEmployee.username);
-            throw new WebApplicationException("User exists", Response.Status.CONFLICT);
+            logger.info("User exists: " + createEmployee.username);
+            throw new ConflictException("User exists");
         }
         Employee employee = new Employee();
         try {
@@ -82,20 +85,50 @@ public class EmployeeService {
     }
 
     @Transactional(SUPPORTS)
-    public Employee updateEmployee(@Valid Employee employeeToUpdate) {
-        if (employeeToUpdate.username == null || employeeToUpdate.username.isEmpty())
-            throw new BadRequestException("Must specify username");
+    public Employee updateEmployee(@Valid UpdateEmployeeRequest employeeToUpdate) {
+        if (employeeToUpdate.id == null || employeeToUpdate.id.toString().isEmpty())
+            throw new BadRequestException("Must specify id");
         Employee employeeEntity;
         try {
-            employeeEntity = findActiveEmployeeBy("username",employeeToUpdate.username);
-            if (employeeToUpdate.email != null) employeeEntity.email = employeeToUpdate.email;
+            employeeEntity = getEmployee(employeeToUpdate.id);
             if (employeeToUpdate.first_name != null) employeeEntity.first_name = employeeToUpdate.first_name;
             if (employeeToUpdate.last_name != null) employeeEntity.last_name = employeeToUpdate.last_name;
+            if (employeeToUpdate.username != null && !employeeToUpdate.username.equals(employeeEntity.username)) {
+                if (userAlreadyExists("username", employeeToUpdate.username)) {
+                    logger.info("Username exists" + employeeToUpdate.username);
+                    throw new ConflictException("Username exists");
+                }
+                employeeEntity.username = employeeToUpdate.username;
+            }
+            if (employeeToUpdate.email != null && !employeeToUpdate.email.equals(employeeEntity.email))
+            {
+                if (userAlreadyExists("email", employeeToUpdate.email)) {
+                    logger.info("Email exists" + employeeToUpdate.email);
+                    throw new ConflictException("Email exists");
+                }
+                employeeEntity.email = employeeToUpdate.email;
+            }
             if (employeeToUpdate.phone_number != null) employeeEntity.phone_number = employeeToUpdate.phone_number;
             if (employeeToUpdate.zip_code != null) employeeEntity.zip_code = employeeToUpdate.zip_code;
+            if (employeeToUpdate.status != null) {
+                if (!EnumUtils.isValidEnum(Status.class, employeeToUpdate.status))
+                    throw new BadRequestException("not a valid status");
+                employeeEntity.status = employeeToUpdate.status;
+            }
+            if (employeeToUpdate.role != null) {
+                if (!EnumUtils.isValidEnum(Role.class, employeeToUpdate.role))
+                    throw new BadRequestException("not a valid role");
+                employeeEntity.role = employeeToUpdate.role;
+            }
         } catch (Exception e) {
-            logger.fatal("couldn't update Employee" + employeeToUpdate.username + "exception: " + e.getMessage());
-            throw new WebApplicationException("Something bad happened, oops", Response.Status.INTERNAL_SERVER_ERROR);
+            if (e instanceof NotFoundException || e instanceof BadRequestException || e instanceof ConflictException) {
+                logger.info("couldn't update Employee" + employeeToUpdate + "exception: " + e.getMessage());
+                throw e;
+            }
+            else {
+                logger.fatal("couldn't update Employee" + employeeToUpdate.username + "exception: " + e.getMessage());
+                throw new WebApplicationException("Something bad happened, oops", Response.Status.INTERNAL_SERVER_ERROR);
+            }
         }
         return employeeEntity;
     }
@@ -104,24 +137,34 @@ public class EmployeeService {
     public void deleteEmployee(Long id) {
         Employee employee;
         try {
-            employee = findEmployeeById(id);
-            existingActiveEmployeeChecks(employee);
+            employee = getEmployee(id);
         } catch (Exception e) {
-            logger.fatal("couldn't delete Employee" + id + "exception: " + e.getMessage());
-            throw new WebApplicationException("Something bad happened, oops", Response.Status.INTERNAL_SERVER_ERROR);
+            if (e instanceof NotFoundException) {
+                logger.info("couldn't delete Employee" + id + "exception: " + e.getMessage());
+                throw e;
+            } else {
+                logger.fatal("couldn't delete Employee" + id + "exception: " + e.getMessage());
+                throw new WebApplicationException("Something bad happened, oops", Response.Status.INTERNAL_SERVER_ERROR);
+            }
         }
         employee.status = deletedStatus;
     }
+
 
     @Transactional(SUPPORTS)
     public Employee getEmployee(Long id) {
         Employee employee;
         try {
-        employee = findEmployeeById(id);
-        existingActiveEmployeeChecks(employee);
+            employee = findEmployeeById(id);
+            existingActiveEmployeeChecks(employee);
         } catch (Exception e) {
-            logger.fatal("couldn't retrieve Employee" + id + "exception: " + e.getMessage());
-            throw new WebApplicationException("Something bad happened, oops", Response.Status.INTERNAL_SERVER_ERROR);
+            if (e instanceof NotFoundException) {
+                logger.info("couldn't retrieve Employee" + id + "exception: " + e.getMessage());
+                throw e;
+            } else {
+                logger.fatal("couldn't retrieve Employee" + id + "exception: " + e.getMessage());
+                throw new WebApplicationException("Something bad happened, oops", Response.Status.INTERNAL_SERVER_ERROR);
+            }
         }
         return employee;
     }

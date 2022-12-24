@@ -3,6 +3,7 @@ package org.acme.api;
 import io.quarkus.security.identity.SecurityIdentity;
 import org.acme.model.Employee;
 import org.acme.model.dto.CreateEmployee;
+import org.acme.model.dto.UpdateEmployeeRequest;
 import org.acme.service.EmployeeService;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.reactive.NoCache;
@@ -55,7 +56,7 @@ public class EmployeesResource {
     @PUT
     @Transactional
     @RolesAllowed("user")
-    public Response updateEmployee(@Valid Employee employeeToUpdate) {
+    public Response updateEmployee(@Valid UpdateEmployeeRequest employeeToUpdate) {
         Employee employee = employeeService.updateEmployee(employeeToUpdate);
         logger.info("Employee updated with new values " + employee);
         return Response.ok(employee).build();
