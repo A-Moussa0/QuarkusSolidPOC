@@ -1,10 +1,9 @@
 package org.acme.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.quarkus.rest.client.reactive.ClientExceptionMapper;
-import org.acme.model.dto.AuthTokenResponse;
 import org.acme.model.dto.CustomUserInfo;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
-
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.*;
@@ -20,7 +19,7 @@ public interface IAuthService {
     @Path("/token")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    AuthTokenResponse callTokenApi(Form authTokenExchangeRequest);
+    JsonNode callTokenApi(Form authTokenExchangeRequest);
 
     @POST
     @Path("/logout")

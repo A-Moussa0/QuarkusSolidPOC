@@ -1,5 +1,6 @@
 package org.acme.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.acme.model.dto.AuthTokenResponse;
 import org.acme.model.dto.CustomUserInfo;
 import org.acme.model.dto.ExchangeTokenRequest;
@@ -36,8 +37,8 @@ public class AuthService {
         this.scope = scope;
     }
 
-    public ExchangeTokenResponse exchangeToken(ExchangeTokenRequest exchangeTokenRequest) {
-        AuthTokenResponse authTokenResponse;
+    public AuthTokenResponse exchangeToken(ExchangeTokenRequest exchangeTokenRequest) {
+        JsonNode keycloakResponse;
         try {
             Form authTokenForm = new Form()
                     .param("client_id", clientId)
@@ -46,7 +47,7 @@ public class AuthService {
                     .param("scope", scope)
                     .param("redirect_uri", exchangeTokenRequest.redirectUri)
                     .param("code", exchangeTokenRequest.authCode);
-            authTokenResponse = authService.callTokenApi(authTokenForm);
+            keycloakResponse = authService.callTokenApi(authTokenForm);
         }
         catch (Exception e) {
             logger.fatal("Error with request for token: " + exchangeTokenRequest.authCode + e.getMessage());
@@ -54,20 +55,22 @@ public class AuthService {
                 throw new BadRequestException("Bad refresh token request");
             throw new WebApplicationException("Something bad happened, oops", Response.Status.INTERNAL_SERVER_ERROR);
         }
-            return buildExchangeResponse(authTokenResponse);
+        return new AuthTokenResponse(keycloakResponse,
+                buildExchangeResponse(keycloakResponse.get("access_token").asText())
+        );
     }
 
-
-    private ExchangeTokenResponse buildExchangeResponse(AuthTokenResponse authTokenResponse) {
-        CustomUserInfo userInfo = getUserInfo(authTokenResponse.accessToken);
-        return new ExchangeTokenResponse(authTokenResponse.accessToken, authTokenResponse.refreshToken, userInfo);
+    private ExchangeTokenResponse buildExchangeResponse(String accessToken) {
+        CustomUserInfo userInfo = getUserInfo(accessToken);
+        return new ExchangeTokenResponse(accessToken, userInfo);
     }
 
     private CustomUserInfo getUserInfo(String accessToken) {
         return authService.callUserInfoApi("Bearer " + accessToken);
     }
 
-    public AuthTokenResponse newAccessToken(String refreshToken) {
+    public JsonNode newAccessToken(String refreshToken) {
+        JsonNode keycloakResponse;
         AuthTokenResponse authTokenResponse;
         try {
             Form refreshTokenForm = new Form()
@@ -75,7 +78,7 @@ public class AuthService {
                     .param("client_secret", secret)
                     .param("grant_type", "refresh_token")
                     .param("refresh_token", refreshToken);
-            authTokenResponse = authService.callTokenApi(refreshTokenForm);
+            keycloakResponse = authService.callTokenApi(refreshTokenForm);
         }
         catch (Exception e){
             logger.fatal("Error with newAccessToken: " + e.getMessage());
@@ -83,7 +86,7 @@ public class AuthService {
                 throw new BadRequestException("Bad refresh token request");
             throw new WebApplicationException("Something bad happened, oops", Response.Status.INTERNAL_SERVER_ERROR);
         }
-        return authTokenResponse;
+        return keycloakResponse;
     }
     public void logout(String idToken) {
         try {
