@@ -2,6 +2,7 @@ package org.acme.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.quarkus.oidc.IdToken;
+import io.vertx.core.http.Cookie;
 import org.acme.Utils;
 import org.acme.model.dto.*;
 import org.acme.service.AuthService;
@@ -15,6 +16,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -39,7 +41,12 @@ public class AuthResource {
         AuthTokenResponse authTokenResponse = authService.exchangeToken(exchangeTokenRequest);
         logger.info("code exchanged");
         List<NewCookie> newCookies = Utils.getAuthCookies(authTokenResponse.keycloakResponse);
-        return Response.ok(authTokenResponse.exchangeTokenResponse).cookie(newCookies.toArray(new NewCookie[]{})).build();
+        NewCookie refreshCookie = newCookies.stream()
+                .filter(newCookie -> newCookie.getComment().contains("refresh token"))
+                .findFirst()
+                .orElse(null);
+        logger.info("refresh cookie: " + refreshCookie);
+        return Response.ok(authTokenResponse.exchangeTokenResponse).header("Set-Cookie", refreshCookie + ";SameSite=None").build();
     }
 
     @POST

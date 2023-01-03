@@ -63,6 +63,8 @@ public class Utils {
             String comment,
             int maxAgeSecs
     ) {
+        log.debug("newcookie.secure: {}", ConfigProvider.getConfig().getValue("newcookie.secure", Boolean.class));
+        log.debug("newcookie.http-only: {}", ConfigProvider.getConfig().getValue("newcookie.http-only", Boolean.class));
         return new NewCookie(
                 cookieName,
                 value,
@@ -70,9 +72,8 @@ public class Utils {
                 ConfigProvider.getConfig().getValue("runningInfo.hostname", String.class),
                 comment,
                 maxAgeSecs,
-                false,
-                true
-
+                ConfigProvider.getConfig().getValue("newcookie.secure", Boolean.class),
+                ConfigProvider.getConfig().getValue("newcookie.http-only", Boolean.class)
         );
     }
 }
