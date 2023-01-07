@@ -1,7 +1,7 @@
 import { A, useNavigate } from '@solidjs/router';
 import { Component, createSignal } from 'solid-js';
-import { authenticated } from '../components/Auth';
-import { submit } from '../components/SignupAction';
+import { authenticated } from '../utils/Auth';
+import { submit } from '../utils/SignupAction';
 import logo from '../logo.svg';
 import GoogleButton from './inc/GoogleButton';
 

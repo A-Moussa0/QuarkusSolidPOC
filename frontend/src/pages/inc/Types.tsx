@@ -1,11 +1,12 @@
-type User = {
+type Employee = {
     id?: number,
     username: string,
     first_name: string,
     last_name: string,
     email: string,
     phone_number: string,
-    zip_code: number
+    zip_code: number,
+    status?:string
 };
 
 type LoginFormFields = {
@@ -30,4 +31,4 @@ type SignupFormFields = {
     zip_code: string;
 };
 
-export type {User,  LoginFormFields, SignupFormFields, Response}
+export type {Employee,  LoginFormFields, SignupFormFields, Response}

@@ -5,11 +5,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
-  <meta http-equiv="Content-Security-Policy" content="script-src 'self' https://accounts.google.com/gsi/client 'sha256-dAMs3/Yp2SSUrhzjwbwLmPPB0soj/thHemUrM4u00O8='; frame-src https://accounts.google.com/gsi/; connect-src 'self' localhost:8080 https://accounts.google.com/gsi/;">
+  <meta http-equiv="Content-Security-Policy"
+    content="script-src 'self' https://accounts.google.com/gsi/client 'sha256-dAMs3/Yp2SSUrhzjwbwLmPPB0soj/thHemUrM4u00O8=';
+     frame-src https://accounts.google.com/gsi/;
+     connect-src 'self' localhost:8080 https://accounts.google.com/gsi/ test.oaaapay.com;">
   <link rel="shortcut icon" type="image/ico" href="/src/assets/favicon.ico" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
-  <title>Java Solid POC</title>
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+  <title>Solid POC</title>
 </head>
 
 <body>
@@ -18,6 +21,9 @@
 
   <script src="/src/index.tsx" type="module"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- <script async defer crossorigin="anonymous"
+    src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v15.0&appId=687305239289337&autoLogAppEvents=1"
+    nonce="QhCLXDc0"></script> -->
 </body>
 
 </html>

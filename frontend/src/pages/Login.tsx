@@ -1,9 +1,10 @@
 import { A, useNavigate } from '@solidjs/router';
 import { Component, createSignal } from 'solid-js';
-import { authenticated } from '../components/Auth';
-import { submit } from '../components/LoginAction';
+import { authenticated } from '../utils/Auth';
+import { submit } from '../utils/LoginAction';
 import logo from '../logo.svg';
 import GoogleButton from './inc/GoogleButton';
+import FacebookButton from './inc/FacebookButton';
 
 const Login: Component = () => {
     authenticated(false)
@@ -51,6 +52,7 @@ const Login: Component = () => {
                                 <button type="submit" class="btn btn-primary">Login</button>
                                 <div class='d-flex mt-3'>
                                 <GoogleButton isLogin/>
+                                {/* <FacebookButton isLogin/> */}
                                     {/* <button type="button" class="btn btn-outline-danger">
                                         {'Login with '}
                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-google" viewBox="0 0 16 16">

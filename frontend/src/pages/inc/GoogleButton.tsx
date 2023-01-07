@@ -1,6 +1,6 @@
 import { useNavigate } from '@solidjs/router';
 import { Component, onMount } from 'solid-js';
-import { login } from '../../components/Auth';
+import { login } from '../../utils/Auth';
 
 interface Props {
     isLogin?: boolean
