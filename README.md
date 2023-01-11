@@ -63,6 +63,11 @@ If you want to build an _über-jar_, execute the following command:
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
 
+For the application to run in the background and not be killed when you exit the terminal, you can run the command like so:
+```shell script
+nohup java -jar ./quarkus-solid-poc-1.0.0-SNAPSHOT-runner.jar &
+```
+
 ## Creating a native executable
 
 You can create a native executable using:
