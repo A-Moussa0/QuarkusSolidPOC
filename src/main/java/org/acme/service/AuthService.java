@@ -27,14 +27,17 @@ public class AuthService {
     private final String clientId;
     private final String secret;
     private final String scope;
+    private final String grantType;
 
     @Inject
     public AuthService(@ConfigProperty(name = "quarkus.oidc.client-id") String clientId,
                        @ConfigProperty(name = "quarkus.oidc.credentials.secret") String secret,
-                       @ConfigProperty(name = "qsp.auth.keycloak.scope")  String scope) {
+                       @ConfigProperty(name = "qsp.auth.keycloak.scope")  String scope,
+                       @ConfigProperty(name = "qsp.auth.keycloak.grant.type") String grantType) {
         this.clientId = clientId;
         this.secret = secret;
         this.scope = scope;
+        this.grantType = grantType;
     }
 
     public AuthTokenResponse exchangeToken(ExchangeTokenRequest exchangeTokenRequest) {
@@ -43,7 +46,7 @@ public class AuthService {
             Form authTokenForm = new Form()
                     .param("client_id", clientId)
                     .param("client_secret", secret)
-                    .param("grant_type", "authorization_code")
+                    .param("grant_type", grantType)
                     .param("scope", scope)
                     .param("redirect_uri", exchangeTokenRequest.redirectUri)
                     .param("code", exchangeTokenRequest.authCode);
@@ -71,7 +74,6 @@ public class AuthService {
 
     public JsonNode newAccessToken(String refreshToken) {
         JsonNode keycloakResponse;
-        AuthTokenResponse authTokenResponse;
         try {
             Form refreshTokenForm = new Form()
                     .param("client_id", clientId)
@@ -100,33 +102,4 @@ public class AuthService {
             throw new WebApplicationException("Something bad happened, oops", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
-
-//    public String register(CreateEmployee createUser) {
-//        try {
-//            UserRepresentation user = new UserRepresentation();
-//            user.setUsername(createUser.username);
-//            user.setFirstName(createUser.first_name);
-//            user.setLastName(createUser.last_name);
-//            user.setEmail(createUser.email);
-//            user.setEnabled(true);
-//            CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
-//            credentialRepresentation.setType("password");
-//            credentialRepresentation.setValue(createUser.password);
-//            credentialRepresentation.setTemporary(false);
-//            user.setCredentials(Collections.singletonList(credentialRepresentation));
-//
-//            Response loginResponse = instance.realm(realm).users().create(user);
-//
-//            logger.info("Response |  Status: " +loginResponse.getStatus() + "| Status Info: " + loginResponse.getStatusInfo());
-//            String userId = loginResponse.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
-//            return userId;
-//        }
-//        catch (Exception e){
-//            logger.debug("Error with registration: " + e.getMessage());
-//            throw e;
-//        }
-//    }
-
-
-
 }
