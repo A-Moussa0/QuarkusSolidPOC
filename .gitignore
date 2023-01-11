@@ -2,6 +2,7 @@
 target/
 postgres_data
 src/main/resources/application.properties
+src/main/resources/deployment-steps
 system.properties
 pom.xml.tag
 pom.xml.releaseBackup

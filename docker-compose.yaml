@@ -4,11 +4,15 @@ services:
     image: keycloak/keycloak:20.0.0
     ports:
       - "8280:8080"
+#      - "8280:8443"
     volumes:
       - ./keycloak-import:/opt/keycloak/data/import
     environment:
       - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KEYCLOAK_ADMIN_PASSWORD=notadmin
+#      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/cert.pem
+#      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/key.pem
+
     command:
       - start-dev
       - --import-realm
