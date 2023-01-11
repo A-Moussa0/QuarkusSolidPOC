@@ -7,6 +7,7 @@ services:
 #      - "8280:8443"
     volumes:
       - ./keycloak-import:/opt/keycloak/data/import
+      - ./keycloak-export/:/opt/keycloak/export
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=notadmin
