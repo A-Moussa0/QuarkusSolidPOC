@@ -4,7 +4,7 @@ import { logout } from '../utils/Auth';
 const Employees = lazy(() => import("../pages/Employees"));
 const Home = lazy(() => import("../pages/Home"));
 const Authenticate = lazy(() => import("../pages/Authenticate"));
-const Signup = lazy(() => import("../pages/Signup"));
+// const Signup = lazy(() => import("../pages/Signup"));
 const PageNotFound = lazy(() => import("../pages/PageNotFound"));
 
 const index: Component = () => {
