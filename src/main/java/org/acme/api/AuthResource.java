@@ -1,8 +1,6 @@
 package org.acme.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.quarkus.oidc.IdToken;
-import io.vertx.core.http.Cookie;
 import org.acme.Utils;
 import org.acme.model.dto.*;
 import org.acme.service.AuthService;
@@ -16,7 +14,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -25,8 +22,7 @@ public class AuthResource {
     @Inject
     Logger logger;
     @Inject
-    @IdToken
-    JsonWebToken idToken;
+    JsonWebToken jsonWebToken;
     AuthService authService;
     @Inject
     public AuthResource(AuthService authService) {
@@ -68,8 +64,8 @@ public class AuthResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout() {
-        authService.logout(idToken.getTokenID());
-        logger.info("Employee logged out with idToke " + idToken);
+        logger.info("User logged out with userId " + jsonWebToken.getName());
+        authService.logout(jsonWebToken.getSubject());
         return Response.ok().build();
     }
 }

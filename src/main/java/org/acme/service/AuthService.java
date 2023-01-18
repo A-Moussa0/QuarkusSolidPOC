@@ -8,6 +8,7 @@ import org.acme.model.dto.ExchangeTokenResponse;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
+import org.keycloak.admin.client.Keycloak;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -24,20 +25,28 @@ public class AuthService {
     @RestClient
     IAuthService authService;
 
+    @Inject
+    Keycloak keycloak;
+
     private final String clientId;
     private final String secret;
     private final String scope;
     private final String grantType;
+    private final String realm;
 
     @Inject
     public AuthService(@ConfigProperty(name = "quarkus.oidc.client-id") String clientId,
                        @ConfigProperty(name = "quarkus.oidc.credentials.secret") String secret,
                        @ConfigProperty(name = "qsp.auth.keycloak.scope")  String scope,
-                       @ConfigProperty(name = "qsp.auth.keycloak.grant.type") String grantType) {
+                       @ConfigProperty(name = "qsp.auth.keycloak.grant.type") String grantType,
+                       @ConfigProperty(name = "quarkus.realm.name") String realm)
+
+    {
         this.clientId = clientId;
         this.secret = secret;
         this.scope = scope;
         this.grantType = grantType;
+        this.realm = realm;
     }
 
     public AuthTokenResponse exchangeToken(ExchangeTokenRequest exchangeTokenRequest) {
@@ -90,12 +99,9 @@ public class AuthService {
         }
         return keycloakResponse;
     }
-    public void logout(String idToken) {
+    public void logout(String keycloakUserId) {
         try {
-            Form logoutForm = new Form()
-                    .param("client_id", clientId)
-                    .param("id_token_hint", idToken);
-            authService.callLogout(logoutForm);
+            keycloak.realm("quarkus").users().get(keycloakUserId).logout();
         }
         catch (Exception e) {
             logger.fatal("Error with request for logout: " + e.getMessage());

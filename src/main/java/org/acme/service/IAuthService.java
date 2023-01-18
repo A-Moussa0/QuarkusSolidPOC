@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.quarkus.rest.client.reactive.ClientExceptionMapper;
 import org.acme.model.dto.CustomUserInfo;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
+import org.jboss.resteasy.reactive.RestPath;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.*;
@@ -20,12 +21,6 @@ public interface IAuthService {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     JsonNode callTokenApi(Form authTokenExchangeRequest);
-
-    @POST
-    @Path("/logout")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    void callLogout(Form email);
 
     @GET
     @Path("/userinfo")
