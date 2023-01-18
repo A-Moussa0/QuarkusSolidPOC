@@ -45,6 +45,25 @@ const exchangeToken = async (auth_code: string) => {
     return {sent:false, errors: []};
 }
 
+const backendLogout = async () => {
+    let res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'include',
+        headers: {
+            'Authorization': `Bearer ${store.token}`
+        }
+    })
+
+    if (res.status === 200) {
+        return {sent: true};
+    }else if(res.status === 400){
+        return {sent:false, errors: ["Couldn't authenticate please try again"]};
+    }
+
+    return {sent:false, errors: []};
+}
+
 const refreshAccessToken = async () => {
     let res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/refresh-access`, {
         method: 'POST',
@@ -67,4 +86,4 @@ const refreshAccessToken = async () => {
     return {sent:false, errors: []};
 }
 
-export { submit, exchangeToken, refreshAccessToken};
+export { submit, exchangeToken, refreshAccessToken, backendLogout};
