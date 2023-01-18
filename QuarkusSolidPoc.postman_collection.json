@@ -1,0 +1,329 @@
+{
+	"info": {
+		"_postman_id": "fa0f4d3a-ab59-43d6-a9f5-ea27c5ac4140",
+		"name": "QuarkusSolidPoc",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10613133"
+	},
+	"item": [
+		{
+			"name": "Create an Employee",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"abdo@test.com\",\r\n  \"username\": \"abdo\",\r\n  \"password\": \"pass\",\r\n  \"first_name\": \"abdelrahman\",\r\n  \"last_name\": \"moussa\",\r\n  \"phone_number\": \"01002905886\",\r\n  \"zip_code\": \"11528\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host-port-backend}}/api/v1/employees",
+					"host": [
+						"{{host-port-backend}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Employees",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host-port-backend}}/api/v1/employees",
+					"host": [
+						"{{host-port-backend}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Employee",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":2,\r\n  \"email\": \"abdo@test.com\",\r\n  \"first_name\": \"abdelrahman\",\r\n  \"last_name\": \"moussa-updated2\",\r\n  \"phone_number\": \"010029058867\",\r\n  \"role\":\"user\",\r\n  \"status\":\"ACT\",\r\n  \"username\":\"abdo\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8181/api/v1/employees",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8181",
+					"path": [
+						"api",
+						"v1",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Employee",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{host-port-backend}}/api/v1/employees/1",
+					"host": [
+						"{{host-port-backend}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"employees",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "exchangeCodeForToken",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "bb0cef85-1c21-46da-b9b6-bd5d8cae9b60.4d69929d-5536-43da-982b-569b4a601bbc.0ac5df91-e044-4051-bd03-106a3a5fb9cc",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://127.0.0.1:3000",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "backend",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "secret",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "asdad",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "scope",
+							"value": "openid",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "username",
+							"value": "th3eror001@gmail.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "pass",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host-port-auth}}/realms/quarkus/protocol/openid-connect/token",
+					"host": [
+						"{{host-port-auth}}"
+					],
+					"path": [
+						"realms",
+						"quarkus",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Exchange Token",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"auth_code\": \"31e0742a-88d3-4a98-84a2-e8fdbb36c8fc.1daeb691-052b-43a9-a972-ee39cf9914bc.0ac5df91-e044-4051-bd03-106a3a5fb9cc\",\r\n  \"redirect_uri\": \"http://127.0.0.1:3000\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host-port-backend}}/api/v1/auth/exchange-token",
+					"host": [
+						"{{host-port-backend}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"exchange-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Access Token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host-port-backend}}/api/v1/auth/refresh-access",
+					"host": [
+						"{{host-port-backend}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"refresh-access"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access-token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host-port-backend}}/api/v1/auth/logout",
+					"host": [
+						"{{host-port-backend}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
